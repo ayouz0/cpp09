@@ -19,7 +19,6 @@ class BitcoinExchange
         float       currentQuantity;
         void    loadInternalDb();
         void    parse(std::string const & line, std::string const & delimiter);
-        void    insertLineintoMap(std::string const & line, std::string const & delimiter, 
-                                            std::map<std::string, double> & dataMap);
+        void    insertLineintoMap(std::string const & line, std::string const & delimiter);
 
 };

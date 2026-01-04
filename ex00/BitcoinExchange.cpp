@@ -20,7 +20,7 @@ void    BitcoinExchange::loadInternalDb(){
 
     while ( std::getline(dataFile, singleLine) ) {
         parse(singleLine, ",");
-        insertLineintoMap(singleLine, ",", this->data);
+        insertLineintoMap(singleLine, ",");
     }
 }
 
@@ -91,8 +91,7 @@ void    BitcoinExchange::parse(std::string const & line, std::string const & del
     }
 }
 
-void    BitcoinExchange::insertLineintoMap(std::string const & line, std::string const & delimiter, 
-                                            std::map<std::string, double> & dataMap){
+void    BitcoinExchange::insertLineintoMap(std::string const & line, std::string const & delimiter){
     size_t pos = 0;
     std::string token;
     std::string lineCopy = line;
@@ -106,5 +105,5 @@ void    BitcoinExchange::insertLineintoMap(std::string const & line, std::string
     // get exchange rate
     token = lineCopy;
     double rate = std::atof(token.c_str());
-    dataMap[date] = rate;
+    this->data[date] = rate;
 }
