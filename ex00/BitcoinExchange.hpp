@@ -7,16 +7,19 @@
 
 class BitcoinExchange
 {
-    private:
-        std::map<std::string, double> data;
     public:
         BitcoinExchange() {};
         BitcoinExchange(BitcoinExchange const &) {};
-        BitcoinExchange operator=(BitcoinExchange &) {};
+        BitcoinExchange operator=(BitcoinExchange &) {
+            return *this;
+        };
         ~BitcoinExchange() {};
-
+        std::map<std::string, double> data;
+        std::string currentDate;
+        float       currentQuantity;
         void    loadInternalDb();
-        void    parseMainDbLine(std::string const &line);
-        void    insertLineintoMap(std::string const &line, std::string const &delim, std::map<std::string, double> map);
+        void    parse(std::string const & line, std::string const & delimiter);
+        void    insertLineintoMap(std::string const & line, std::string const & delimiter, 
+                                            std::map<std::string, double> & dataMap);
 
 };
