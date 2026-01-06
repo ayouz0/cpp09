@@ -13,7 +13,6 @@ void    BitcoinExchange::loadInternalDb(){
 
     std::string singleLine;
     
-    
     if ( !std::getline(dataFile, singleLine) || singleLine != "date,exchange_rate" ){
         throw std::runtime_error(DB_ERR"improper file start format, it must begin with {{date,exchange_rate}}");
     }
