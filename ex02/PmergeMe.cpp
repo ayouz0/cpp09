@@ -36,7 +36,6 @@ void PmergeMe::parseInput(int ac, const char **av) {
         _deque.push_back(Tracked<unsigned int>(value));
     }
 }
-
 void PmergeMe::start(int ac, const char **av) {
     if (ac < 2){
         std::cerr << "usage: ./PmergeMe <unsigned numbers>" << std::endl;
@@ -52,7 +51,7 @@ void PmergeMe::start(int ac, const char **av) {
 
     Stats::reset();
     std::cout << "Sorting Vector..." << std::endl;
-    this->sortVector();
+    this->sortVector(_vector);
     std::cout << "Vector Comparisons: " << Stats::comparisons << std::endl;
 
     // Stats::reset();
@@ -61,59 +60,50 @@ void PmergeMe::start(int ac, const char **av) {
     // std::cout << "Deque Comparisons: " << Stats::comparisons << std::endl;
 }
 
-void    PmergeMe::sortVector(){
+void PmergeMe::sortVector(std::vector<Tracked<unsigned int> > &vec) {
+    if (vec.size() <= 1) return;
 
     bool hasStraggler = false;
-    Tracked <unsigned int> straggler(_vector.back());
-    if (_vector.size() % 2 != 0){
-        // we have a straggler
+    Tracked<unsigned int> straggler(0);
+    if (vec.size() % 2 != 0) {
         hasStraggler = true;
-        _vector.pop_back();
+        straggler = vec.back();
+        vec.pop_back();
     }
 
-    std::vector < std::pair< Tracked<unsigned int>, Tracked<unsigned int> > > pairs (_vector.size() / 2);
-    for (size_t pairsIter = 0; pairsIter < pairs.size() ; pairsIter++){
-
-        size_t vecIter = pairsIter * 2;
-
-        pairs[pairsIter].first = _vector[vecIter];
-        pairs[pairsIter].second = _vector[vecIter + 1];
+    std::vector<std::pair<Tracked<unsigned int>, Tracked<unsigned int> > > pairs;
+    for (size_t i = 0; i < vec.size(); i += 2) {
+        if (vec[i] > vec[i + 1]) {
+            pairs.push_back(std::make_pair(vec[i], vec[i + 1]));
+        } else {
+            pairs.push_back(std::make_pair(vec[i + 1], vec[i]));
+        }
     }
 
-    std::vector< Tracked<unsigned int> > winners(_vector.size() / 2);
-    std::vector< Tracked<unsigned int> > loosers((_vector.size() / 2));
+    std::vector<Tracked<unsigned int> > mainChain;
+    for (size_t i = 0; i < pairs.size(); i++) {
+        mainChain.push_back(pairs[i].first);
+    }
 
-    for (size_t i = 0; i < winners.size(); i++)
-    {
-        if (pairs[i].first < pairs[i].second){
-            winners[i] = pairs[i].second;
-            pairs[i].second = pairs[i].first;
+    sortVector(mainChain);
+    std::vector<Tracked<unsigned int> > pend;
+    for (size_t i = 0; i < mainChain.size(); i++) {
+        for (size_t j = 0; j < pairs.size(); j++) {
+            if (pairs[j].first == mainChain[i]) {
+                pend.push_back(pairs[j].second);
+                pairs.erase(pairs.begin() + j); 
+                break;
+            }
         }
-        else{
+    }
+    mainChain.insert(mainChain.begin(), pend[0]);
 
-            winners[i] = pairs[i].first;
-        }
+    size_t insertionCount = 1;
+    
+    for(size_t i = 1; i < mainChain.size(); i++) {
+
+        Tracked<unsigned int> toInsert = pend[i];
 
         
-
-        loosers[i] =  pairs[i].second;
     }
-
-
-
-
-    
-    // std::cout << "winners\n";
-    // for (size_t i = 0; i < winners.size(); i++)
-    // {
-    //     std::cout << winners[i] << std::endl;
-    // }
-    
-    // std::cout << "loosers\n";
-    // for (size_t i = 0; i < loosers.size(); i++)
-    // {
-    //     std::cout << loosers[i] << std::endl;
-    // }
-    std:: cout << "straggler\n" << straggler << std::endl;
-
 }

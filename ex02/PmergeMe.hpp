@@ -47,7 +47,7 @@ class PmergeMe {
 
         void parseInput(int ac, const char **av);
 
-        void sortVector();
+        void sortVector(std::vector < Tracked <unsigned int> > &vec);
         void sortDeque();
 };
 
