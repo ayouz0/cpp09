@@ -3,14 +3,6 @@
 #include <sstream>
 #include <cctype>
 
-// void    trim(std::string &inputToTrim){
-//     std::string whiteSpaces(" \n\r\t\v");
-//     size_t pos = inputToTrim.find_first_not_of(whiteSpaces);
-//     inputToTrim.erase(0, pos);
-//     pos = inputToTrim.find_last_not_of(whiteSpaces);
-//     inputToTrim.erase(pos, inputToTrim.length() - 1);
-//     std::cout << "last state of trimmed string :" << inputToTrim;
-// }
 
 void    RPN::splitToTokens(std::string &input){
     std::stringstream ss(input);
@@ -62,7 +54,7 @@ int    RPN::postfixNotationCalculation(){
         if (isOperand(*it)){
             this->stack.push(std::atoi((*it).c_str()));
         }
-        else {
+        else if(stack.size() > 1){
             int first = stack.top();
             stack.pop();
             int last = stack.top();
