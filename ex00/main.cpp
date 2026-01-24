@@ -34,9 +34,10 @@ int main(int ac, const char **av) {
             if (it == session.data.end() || it->first != session.currentDate) {
                 if (it == session.data.begin()) {
                     throw std::runtime_error("date is older than the oldest record in database");
-                it--;
                 }
+                --it;
             }
+
             double exchangeRate = it->second;
             double result = session.currentQuantity * exchangeRate;
             std::cout << session.currentDate << " => " << session.currentQuantity << " = " 

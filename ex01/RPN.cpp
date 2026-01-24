@@ -29,7 +29,6 @@ void    RPN::parseTokens(std::string input){
         throw std::runtime_error("invalid character found while parsing tokens");
     }
 
-    // trim(input);
     
     splitToTokens(input);
 }
@@ -70,9 +69,15 @@ int    RPN::postfixNotationCalculation(){
                 resultToPush = last - first;
             }
             else if (*it == "/"){
+                if (first == 0){
+                    throw std::runtime_error("division by zero");
+                }
                 resultToPush = last / first;
             }
             this->stack.push(resultToPush);
+        }
+        else {
+            throw std::runtime_error("not enought operands");
         }
         it++;
     }

@@ -53,19 +53,12 @@ void PmergeMe::start(int ac, const char **av) {
         return;
     }
     
-    std::cout<< "Before: ";
-    if (_vector.size() <= 5){
-        for (size_t i = 0; i < _vector.size(); i++){
-            std::cout << _vector[i] << ' ';
-        }
-    }
-    else{
-        for (size_t i = 0; i < 5; i++){
-            std::cout << _vector[i] << ' ';
-        }
-    }
     std::cout << std::endl;
     {
+        std::cout<< "Before:";
+        for (size_t i = 0; i < _vector.size(); i++){
+            std::cout <<  ' ' << _vector[i];
+        }
         std::clock_t startVec = std::clock();
         
         this->sortVector(_vector);
@@ -74,35 +67,19 @@ void PmergeMe::start(int ac, const char **av) {
         double timeVec = static_cast<double>(endVec - startVec) / CLOCKS_PER_SEC * 1000000;
 
         std::cout<< "after : ";
-        if (_vector.size() <= 5){
-            for (size_t i = 0; i < _vector.size(); i++){
-                std::cout << _vector[i] << ' ';
-            }
-        }
-        else{
-            for (size_t i = 0; i < 5; i++){
-                std::cout << _vector[i] << ' ';
-            }
+        for (size_t i = 0; i < _vector.size(); i++){
+            std::cout << _vector[i] << ' ';
         }
         std::cout << std::endl;
-
         std::cout << "Time to process a range of " << _vector.size() 
                 << " elements with std::vector : " 
                 << std::fixed << std::setprecision(5) << timeVec << " us" << std::endl;
     }
     {
         std::cout<< "Before: ";
-    if (_deque.size() <= 5){
         for (size_t i = 0; i < _deque.size(); i++){
             std::cout << _deque[i] << ' ';
         }
-    }
-    else{
-        for (size_t i = 0; i < 5; i++){
-            std::cout << _deque[i] << ' ';
-        }
-        std:: cout << "[...]";
-    }
         std::clock_t startDeq = std::clock();
         
         this->sortDeque(_deque);
@@ -111,17 +88,8 @@ void PmergeMe::start(int ac, const char **av) {
         double timeDeq = static_cast<double>(endDeq - startDeq) / CLOCKS_PER_SEC * 1000000;
 
         std::cout<< "\nafter : ";
-        if (_deque.size() <= 5){
-            for (size_t i = 0; i < _deque.size(); i++){
-                std::cout << _deque[i] << ' ';
-            }
-        }
-        else{
-            for (size_t i = 0; i < 5; i++){
-                std::cout << _deque[i] << ' ';
-            }
-
-            std:: cout << "[...]";
+        for (size_t i = 0; i < _deque.size(); i++){
+            std::cout << _deque[i] << ' ';
         }
         std::cout << std::endl;
 
@@ -131,11 +99,11 @@ void PmergeMe::start(int ac, const char **av) {
     }
 }
 
-    size_t getJacobsthal(size_t n) {
-        if (n == 0) return 0;
-        if (n == 1) return 1;
-        return getJacobsthal(n - 1) + 2 * getJacobsthal(n - 2);
-    }
+size_t getJacobsthal(size_t n) {
+    if (n == 0) return 0;
+    if (n == 1) return 1;
+    return getJacobsthal(n - 1) + 2 * getJacobsthal(n - 2);
+}
 
 void PmergeMe::sortVector(std::vector<unsigned int > &vec) {
     if (vec.size() <= 1) return; // base case
@@ -175,14 +143,14 @@ void PmergeMe::sortVector(std::vector<unsigned int > &vec) {
             }
         }
     }
-
     mainChain.insert(mainChain.begin(), pend[0]);
+    size_t addedCount = 1;
+
     size_t jacobIndex = 3; 
     size_t prevJacob = 1; 
 
     while (1) {
         size_t nextJacob = getJacobsthal(jacobIndex);
-        std::cout << "next jacob for" << jacobIndex <<  " : "  << nextJacob << std::endl;
         size_t rangeEnd = nextJacob;
         if (rangeEnd > pend.size()) {
             rangeEnd = pend.size();
@@ -190,12 +158,14 @@ void PmergeMe::sortVector(std::vector<unsigned int > &vec) {
 
         for (size_t i = rangeEnd; i > prevJacob; i--) {
             unsigned int toInsert = pend[i - 1];
-            
+            std::vector<unsigned int>::iterator boundIt = mainChain.begin() + (i - 1) + addedCount;
+
             std::vector<unsigned int >::iterator insertPos;
             
-            insertPos = std::lower_bound(mainChain.begin(), mainChain.end(), toInsert);
+            insertPos = std::lower_bound(mainChain.begin(), boundIt, toInsert);
             
             mainChain.insert(insertPos, toInsert);
+            addedCount++;
         }
 
         if (rangeEnd == pend.size())

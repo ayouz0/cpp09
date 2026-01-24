@@ -6,7 +6,7 @@
 void    BitcoinExchange::loadInternalDb(){
     std::ifstream dataFile(FILENAME);
 
-    if ( dataFile.fail() ){
+    if ( !dataFile.is_open() ){
         std::string msg = "file failed to open, expected file was ";
         throw( std::runtime_error(msg + FILENAME) );
     }
@@ -73,7 +73,7 @@ void    BitcoinExchange::parse(std::string const & line, std::string const & del
          throw std::runtime_error("invalid day found in date");
     }
     std::string rateStr = line.substr(pos + delimiter.length()); 
-    double rate = std::atof(rateStr.c_str());
+    double rate = std::strtod(rateStr.c_str(), NULL);
     if ( rate < 0.0 ){
         throw std::runtime_error("negative exchange rate found");
     }
@@ -81,7 +81,7 @@ void    BitcoinExchange::parse(std::string const & line, std::string const & del
     if (delimiter == " | " && rate > 1000.0){
         throw std::runtime_error("too large quantity found in line");
     }
-    if (rate > std::numeric_limits<double>::max()){
+    if (rate > std::numeric_limits<int>::max()){
         throw std::runtime_error("exchange rate too large in line");
     }
     if (delimiter == " | "){

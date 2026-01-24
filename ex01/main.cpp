@@ -13,7 +13,7 @@ int main(int ac, const char **av){
         int result = session.postfixNotationCalculation();
         std::cout << result << std::endl;
     }
-    catch (std::runtime_error &e){
+    catch (std::exception &e){
         std::cerr << "Error: " << e.what() << std::endl;
         return 1;
     }
