@@ -1,11 +1,14 @@
 #include "PmergeMe.hpp"
-#include <sstream>
-#include <iostream>
-#include <set>
-#include <stdexcept>
 
 
 PmergeMe::PmergeMe() {}
+PmergeMe::PmergeMe(PmergeMe const &copy) {*this = copy;}
+
+PmergeMe &PmergeMe::operator=(PmergeMe const & copy){
+    (void)copy;
+    return *this;
+};
+
 PmergeMe::~PmergeMe() {}
 
 void PmergeMe::parseInput(int ac, const char **av) {
@@ -98,6 +101,7 @@ void PmergeMe::start(int ac, const char **av) {
         for (size_t i = 0; i < 5; i++){
             std::cout << _deque[i] << ' ';
         }
+        std:: cout << "[...]";
     }
         std::clock_t startDeq = std::clock();
         
@@ -116,6 +120,8 @@ void PmergeMe::start(int ac, const char **av) {
             for (size_t i = 0; i < 5; i++){
                 std::cout << _deque[i] << ' ';
             }
+
+            std:: cout << "[...]";
         }
         std::cout << std::endl;
 
@@ -125,21 +131,21 @@ void PmergeMe::start(int ac, const char **av) {
     }
 }
 
-size_t getJacobsthal(size_t n) {
-    if (n == 0) return 0;
-    if (n == 1) return 1;
-    return getJacobsthal(n - 1) + 2 * getJacobsthal(n - 2);
-}
+    size_t getJacobsthal(size_t n) {
+        if (n == 0) return 0;
+        if (n == 1) return 1;
+        return getJacobsthal(n - 1) + 2 * getJacobsthal(n - 2);
+    }
 
 void PmergeMe::sortVector(std::vector<unsigned int > &vec) {
-    if (vec.size() <= 1) return;
+    if (vec.size() <= 1) return; // base case
 
     bool hasStraggler = false;
     unsigned int straggler(0);
     if (vec.size() % 2 != 0) {
         hasStraggler = true;
         straggler = vec.back();
-        vec.pop_back();
+        vec.pop_back(); // pop straggler
     }
 
     std::vector<std::pair<unsigned int, unsigned int > > pairs;
@@ -148,15 +154,17 @@ void PmergeMe::sortVector(std::vector<unsigned int > &vec) {
             pairs.push_back(std::make_pair(vec[i], vec[i + 1]));
         } else {
             pairs.push_back(std::make_pair(vec[i + 1], vec[i]));
-        }
+        } 
     }// first is always winner
 
     std::vector<unsigned int > mainChain;
     for (size_t i = 0; i < pairs.size(); i++) {
-        mainChain.push_back(pairs[i].first);
+        mainChain.push_back(pairs[i].first); // push winners into thr main chain
     }
 
-    sortVector(mainChain);
+    sortVector(mainChain); // recurcive calls
+
+
     std::vector<unsigned int > pend;
     for (size_t i = 0; i < mainChain.size(); i++) {
         for (size_t j = 0; j < pairs.size(); j++) {
@@ -174,6 +182,7 @@ void PmergeMe::sortVector(std::vector<unsigned int > &vec) {
 
     while (1) {
         size_t nextJacob = getJacobsthal(jacobIndex);
+        std::cout << "next jacob for" << jacobIndex <<  " : "  << nextJacob << std::endl;
         size_t rangeEnd = nextJacob;
         if (rangeEnd > pend.size()) {
             rangeEnd = pend.size();

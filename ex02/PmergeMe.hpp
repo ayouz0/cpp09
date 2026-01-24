@@ -1,6 +1,10 @@
 #ifndef PMERGEME_HPP
 #define PMERGEME_HPP
 
+#include <sstream>
+#include <iostream>
+#include <set>
+#include <stdexcept>
 #include <vector>
 #include <deque>
 #include <iostream>
@@ -10,13 +14,14 @@
 class PmergeMe {
     public:
         PmergeMe();
-        PmergeMe(PmergeMe const &);
-        PmergeMe &operator=(PmergeMe &);
-        ~PmergeMe();
 
         void start(int ac, const char **av);
 
+        ~PmergeMe();
     private:
+        PmergeMe(PmergeMe const &);
+        PmergeMe &operator=(PmergeMe const &);
+
         std::vector< unsigned int > _vector;
         std::deque< unsigned int >  _deque;
 
